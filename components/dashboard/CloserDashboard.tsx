@@ -114,8 +114,8 @@ export function CloserDashboard({ data, user }: CloserDashboardProps) {
 
                     <Card className="border-green-500/20 bg-gradient-to-br from-secondary/30 to-background">
                         <CardHeader>
-                            <CardTitle className="text-green-400">Registrar Venda</CardTitle>
-                            <CardDescription>
+                            <CardTitle className="text-green-400 text-2xl">Métricas</CardTitle>
+                            <CardDescription className="text-gray-400">
                                 Preencha os dados do fechamento. Validação automática via ClickUp.
                             </CardDescription>
                         </CardHeader>

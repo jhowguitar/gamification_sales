@@ -17,8 +17,8 @@ export function TopPerformers({ sdrRanking, closerRanking }: TopPerformersProps)
                     <div
                         key={user.id}
                         className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-300 ${index === 0
-                                ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.1)]'
-                                : 'bg-secondary/30 border-white/5'
+                            ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.1)]'
+                            : 'bg-secondary/30 border-white/5'
                             }`}
                     >
                         <div className="flex items-center gap-3">
@@ -59,11 +59,11 @@ export function TopPerformers({ sdrRanking, closerRanking }: TopPerformersProps)
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-primary/20 bg-gradient-to-b from-secondary/50 to-background">
-                <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2 text-primary">
-                        <Trophy className="w-5 h-5" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Card className="border-primary/40 bg-gradient-to-b from-secondary/80 to-background shadow-[0_0_20px_rgba(90,45,255,0.15)] transform hover:scale-[1.02] transition-all duration-300">
+                <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-3 text-2xl text-primary">
+                        <Trophy className="w-8 h-8 drop-shadow-[0_0_8px_rgba(90,45,255,0.5)]" />
                         Top SDRs
                     </CardTitle>
                 </CardHeader>
@@ -72,10 +72,10 @@ export function TopPerformers({ sdrRanking, closerRanking }: TopPerformersProps)
                 </CardContent>
             </Card>
 
-            <Card className="border-green-500/20 bg-gradient-to-b from-secondary/50 to-background">
-                <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center gap-2 text-green-500">
-                        <Medal className="w-5 h-5" />
+            <Card className="border-green-500/40 bg-gradient-to-b from-secondary/80 to-background shadow-[0_0_20px_rgba(34,197,94,0.15)] transform hover:scale-[1.02] transition-all duration-300">
+                <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-3 text-2xl text-green-500">
+                        <Medal className="w-8 h-8 drop-shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
                         Top Closers
                     </CardTitle>
                 </CardHeader>

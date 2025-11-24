@@ -23,6 +23,14 @@
       "password": "123",
       "role": "CLOSER",
       "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=Closer"
+    },
+    {
+      "id": "l2fxlq5l7",
+      "name": "josefh",
+      "email": "clovis.araujoalves@hotmail.com",
+      "password": "123456",
+      "role": "SDR",
+      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=josefh"
     }
   ],
   "leadEntries": [
@@ -49,6 +57,15 @@
       "setupValue": 2000,
       "paymentMethod": "PIX",
       "createdAt": "2025-11-24T03:21:31.423Z"
+    },
+    {
+      "id": "me4x74fhi",
+      "userId": "3",
+      "clientName": "Fernando ",
+      "setupValue": 2000,
+      "paymentMethod": "PIX",
+      "installments": 1,
+      "createdAt": "2025-11-24T03:28:58.447Z"
     }
   ],
   "messages": [],
