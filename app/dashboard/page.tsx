@@ -1,22 +1,20 @@
 import { getDB, getUserById } from '@/lib/db';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { CeoDashboard } from '@/components/dashboard/CeoDashboard';
-import { SdrDashboard } from '@/components/dashboard/SdrDashboard';
-import { CloserDashboard } from '@/components/dashboard/CloserDashboard';
+import { InicioOverview } from '@/components/dashboard/InicioOverview';
 
 export const dynamic = 'force-dynamic';
 
 async function getDashboardData(userId: string, role: string) {
     const db = getDB();
 
-    // Calculate rankings (Shared logic, but filtered in view)
+    // Calculate rankings
     const sdrRanking = db.users
         .filter(u => u.role === 'SDR')
         .map(u => {
             const leads = db.leadEntries
                 .filter(e => e.userId === u.id)
-                .reduce((acc, curr) => acc + curr.leadsExecuted, 0); // Simplified for ranking
+                .reduce((acc, curr) => acc + curr.leadsExecuted, 0);
             const commission = db.leadEntries
                 .filter(e => e.userId === u.id)
                 .reduce((acc, curr) => acc + (curr.leadsExecuted * db.config.leadExecutedValue) + (curr.leadsQualified * db.config.leadQualifiedValue), 0);
@@ -72,14 +70,6 @@ export default async function DashboardPage() {
 
     const data = await getDashboardData(userId, user.role);
 
-    // Strict Role-Based Rendering
-    if (user.role === 'CEO' || user.role === 'LEADER') {
-        return <CeoDashboard data={data} />;
-    } else if (user.role === 'SDR') {
-        return <SdrDashboard data={data} user={user} />;
-    } else if (user.role === 'CLOSER') {
-        return <CloserDashboard data={data} user={user} />;
-    } else {
-        return <div>Role not recognized</div>;
-    }
+    // All roles see the same overview page
+    return <InicioOverview data={data} user={user} />;
 }
