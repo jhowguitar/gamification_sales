@@ -1,0 +1,39 @@
+# Guia de Deploy - Sales Gamification
+
+Como o sistema utiliza um arquivo local ([data.json](file:///Users/clovisalves/.gemini/antigravity/brain/433ae1ac-c574-40f2-a6ac-cd747c475517/walkthrough.md.metadata.json)) para salvar os dados, a melhor forma de hospedar em um servidor externo (VPS como DigitalOcean, AWS, Hetzner, etc.) é utilizando **Docker**.
+
+## Pré-requisitos no Servidor
+- Docker instalado
+- Git instalado (opcional, para clonar o repo)
+
+## Passo a Passo
+
+### 1. Preparar o Arquivo
+Se você não estiver usando git no servidor, copie a pasta do projeto para lá.
+
+### 2. Construir a Imagem
+No diretório do projeto, rode:
+
+```bash
+docker build -t sales-gamification .
+```
+
+### 3. Rodar o Container
+Para garantir que os dados não sejam perdidos ao reiniciar o container, precisamos criar um "volume" para o arquivo de dados.
+
+```bash
+# Primeiro, crie um arquivo vazio se não existir
+touch data.json
+
+# Rode o container mapeando o arquivo data.json
+docker run -d \
+  -p 80:3000 \
+  -v $(pwd)/data.json:/app/data.json \
+  --name sales-app \
+  sales-gamification
+```
+
+Agora o sistema estará acessível no IP do seu servidor na porta 80 (http://seu-ip).
+
+## Observação Importante
+Se você usar serviços como **Vercel** ou **Netlify**, o sistema vai funcionar, mas **os dados serão resetados** toda vez que houver um novo deploy ou quando o servidor reiniciar, pois eles não suportam escrita persistente em arquivos locais. Por isso, recomendo o uso de Docker em um VPS.

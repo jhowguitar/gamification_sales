@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #f5f3ff; /* violet-50 */
+  --foreground: #171717;
+
+  --card: #ffffff;
+  --card-foreground: #171717;
+
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+
+  --primary: #7c3aed; /* violet-600 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #ede9fe; /* violet-100 */
+  --secondary-foreground: #5b21b6; /* violet-800 */
+
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  --accent: #ddd6fe; /* violet-200 */
+  --accent-foreground: #4c1d95;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #7c3aed;
+
+  --radius: 1rem;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #ededed;
+
+  --card: #1e293b;
+  --card-foreground: #ededed;
+
+  --popover: #1e293b;
+  --popover-foreground: #ededed;
+
+  --primary: #8b5cf6; /* violet-500 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #ededed;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  --accent: #1e293b;
+  --accent-foreground: #ededed;
+
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ededed;
+
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #8b5cf6;
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
 }
