@@ -2,16 +2,17 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Trophy, Target, MessageSquare, Settings, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Trophy, Target, MessageSquare, Settings, LogOut, User, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 const navItems = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Início', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Métricas', href: '/dashboard/metricas', icon: BarChart3, roles: ['SDR', 'CLOSER'] },
     { name: 'Ranking', href: '/dashboard/ranking', icon: Trophy },
     { name: 'Perfil', href: '/dashboard/profile', icon: User },
     // Only show Admin for CEO (This logic should ideally be server-side or checked against user role prop)
-    { name: 'Admin', href: '/dashboard/admin', icon: Settings },
+    { name: 'Admin', href: '/dashboard/admin', icon: Settings, roles: ['CEO'] },
 ];
 
 export function Sidebar() {

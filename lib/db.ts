@@ -43,6 +43,19 @@ export interface GoalConfig {
     closerBonusThreshold: number;
 }
 
+export interface MetricEntry {
+    id: string;
+    userId: string;
+    role: Role;
+    week: string;
+    leadsExecuted: number;
+    leadsQualified: number;
+    meetings: number;
+    proposals: number;
+    closings: number;
+    createdAt: string;
+}
+
 export interface Message {
     id: string;
     fromUserId: string;
@@ -57,6 +70,7 @@ export interface DatabaseSchema {
     users: User[];
     leadEntries: LeadEntry[];
     saleEntries: SaleEntry[];
+    metricEntries: MetricEntry[];
     messages: Message[];
     config: GoalConfig;
     ceoMessage: string;
@@ -96,6 +110,7 @@ const initialData: DatabaseSchema = {
     ],
     leadEntries: [],
     saleEntries: [],
+    metricEntries: [],
     messages: [],
     config: {
         weeklyGoal: 50000,
