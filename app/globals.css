@@ -16,72 +16,48 @@
 }
 
 :root {
-  --popover-foreground: #171717;
+  /* Exact colors from reference screenshot */
+  --background: #F5F3FF;
+  --foreground: #1e1b4b;
 
-  --primary: #7c3aed;
-  /* violet-600 */
+  --card: #FFFFFF;
+  --card-foreground: #1e1b4b;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #1e1b4b;
+
+  /* Primary purple gradient (Meta Mensal card) */
+  --primary: #8F4BFF;
+  --primary-mid: #7B35F7;
+  --primary-end: #6B25E8;
   --primary-foreground: #ffffff;
 
   --secondary: #ede9fe;
-  /* violet-100 */
   --secondary-foreground: #5b21b6;
-  /* violet-800 */
 
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
+  --muted: #f5f3ff;
+  --muted-foreground: #64748b;
 
   --accent: #ddd6fe;
-  /* violet-200 */
   --accent-foreground: #4c1d95;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #7c3aed;
+  /* Card borders/shadows */
+  --border: #E7DFFC;
+  --input: #E7DFFC;
+  --ring: #8F4BFF;
 
-  --radius: 1rem;
-}
+  /* Gold medal color */
+  --gold: #F3C130;
 
-.dark {
-  --background: #0f172a;
-  --foreground: #ededed;
-
-  --card: #1e293b;
-  --card-foreground: #ededed;
-
-  --popover: #1e293b;
-  --popover-foreground: #ededed;
-
-  --primary: #8b5cf6;
-  /* violet-500 */
-  --primary-foreground: #ffffff;
-
-  --secondary: #1e293b;
-  --secondary-foreground: #ededed;
-
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-
-  --accent: #1e293b;
-  --accent-foreground: #ededed;
-
-  --destructive: #7f1d1d;
-  --destructive-foreground: #ededed;
-
-  --border: #1e293b;
-  --input: #1e293b;
-  --ring: #8b5cf6;
+  --radius: 1.5rem;
 }
 
 body {
-  background: var(--background);
-  color: #e5e7eb;
-  /* gray-200 for better readability vs pure white */
-  font-family: 'Inter', sans-serif;
-  background-image:
-    radial-gradient(circle at 50% 0%, rgba(90, 45, 255, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 10%, rgba(90, 45, 255, 0.08) 0%, transparent 30%);
+  background: #F5F3FF;
+  color: var(--foreground);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
 }
