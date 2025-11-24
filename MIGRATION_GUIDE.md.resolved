@@ -1,0 +1,245 @@
+# 🚀 Guia Completo: Migração para PostgreSQL
+
+## ✅ O QUE JÁ FOI FEITO
+
+1. ✅ Prisma instalado
+2. ✅ Schema do banco criado ([prisma/schema.prisma](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/prisma/schema.prisma))
+3. ✅ Cliente Prisma configurado ([lib/prisma.ts](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/lib/prisma.ts))
+4. ✅ Script de seed criado ([prisma/seed.ts](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/prisma/seed.ts))
+5. ✅ Scripts npm configurados
+
+---
+
+## 📋 PRÓXIMOS PASSOS
+
+### OPÇÃO 1: Usar Banco de Dados Gratuito Online (RECOMENDADO PARA TESTES)
+
+#### A) Supabase (Mais Fácil)
+
+1. **Criar conta grátis:**
+   - Acesse: https://supabase.com
+   - Clique em "Start your project"
+   - Crie um novo projeto
+
+2. **Pegar credenciais:**
+   - No painel do Supabase, vá em "Settings" → "Database"
+   - Copie a "Connection string" (formato: `postgresql://...`)
+
+3. **Configurar no projeto:**
+   ```bash
+   # Crie o arquivo .env (se não existir)
+   echo 'DATABASE_URL="sua-connection-string-aqui"' > .env
+   ```
+
+4. **Aplicar o schema:**
+   ```bash
+   npm run db:push
+   ```
+
+5. **Popular com dados iniciais:**
+   ```bash
+   npm run db:seed
+   ```
+
+6. **Gerar o cliente Prisma:**
+   ```bash
+   npm run db:generate
+   ```
+
+#### B) Neon (Alternativa)
+
+1. Acesse: https://neon.tech
+2. Crie projeto gratuito
+3. Copie a connection string
+4. Siga passos 3-6 acima
+
+---
+
+### OPÇÃO 2: PostgreSQL Local (Para Desenvolvimento)
+
+#### Mac (usando Homebrew):
+```bash
+# Instalar PostgreSQL
+brew install postgresql@15
+
+# Iniciar serviço
+brew services start postgresql@15
+
+# Criar banco de dados
+createdb sales_gamification
+```
+
+#### Windows:
+1. Baixe: https://www.postgresql.org/download/windows/
+2. Instale com pgAdmin
+3. Crie banco chamado `sales_gamification`
+
+#### Configurar:
+```bash
+# No arquivo .env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/sales_gamification?schema=public"
+```
+
+Depois execute:
+```bash
+npm run db:push
+npm run db:seed
+npm run db:generate
+```
+
+---
+
+### OPÇÃO 3: Hostinger (Produção)
+
+1. **No painel da Hostinger:**
+   - Vá em "Bancos de Dados" → "Criar Banco de Dados"
+   - Escolha PostgreSQL (ou MySQL*)
+   - Anote: usuário, senha, host, porta, nome do banco
+
+2. **Montar a URL de conexão:**
+   ```
+   DATABASE_URL="postgresql://USUARIO:SENHA@HOST:PORTA/NOME_DO_BANCO?schema=public"
+   ```
+
+3. **Configurar no projeto:**
+   - Adicione a `DATABASE_URL` nas variáveis de ambiente do painel
+   - Ou crie arquivo `.env` no servidor
+
+4. **Deploy:**
+   ```bash
+   npm run db:push
+   npm run db:seed
+   npm run db:generate
+   npm run build
+   ```
+
+*Se a Hostinger só tiver MySQL, altere no [schema.prisma](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/prisma/schema.prisma):
+```prisma
+datasource db {
+  provider = "mysql"  // ← mudar aqui
+  url      = env("DATABASE_URL")
+}
+```
+
+---
+
+## 🔄 MIGRAR DADOS DO JSON PARA O BANCO
+
+Se você já tem dados no [data.json](file:///Users/clovisalves/.gemini/antigravity/brain/433ae1ac-c574-40f2-a6ac-cd747c475517/walkthrough.md.metadata.json) e quer migrar:
+
+```typescript
+// Crie um arquivo: scripts/migrate-json-to-db.ts
+import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+
+const prisma = new PrismaClient();
+
+async function migrate() {
+  const jsonData = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
+  
+  // Migrar usuários
+  for (const user of jsonData.users) {
+    await prisma.user.create({
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+        avatarUrl: user.avatarUrl
+      }
+    });
+  }
+  
+  // Migrar métricas
+  for (const metric of jsonData.metricEntries) {
+    await prisma.metricEntry.create({
+      data: {
+        userId: metric.userId,
+        week: metric.week,
+        leadsExecuted: metric.leadsExecuted,
+        leadsQualified: metric.leadsQualified,
+        meetings: metric.meetings || 0,
+        proposals: metric.proposals || 0,
+        closings: metric.closings || 0,
+        status: metric.status || 'PENDING',
+        createdAt: new Date(metric.createdAt)
+      }
+    });
+  }
+  
+  console.log('✅ Migração concluída!');
+}
+
+migrate();
+```
+
+Execute:
+```bash
+npx tsx scripts/migrate-json-to-db.ts
+```
+
+---
+
+## 🛠️ COMANDOS ÚTEIS
+
+```bash
+# Ver banco de dados visualmente
+npm run db:studio
+
+# Criar nova migration
+npm run db:migrate
+
+# Resetar banco (CUIDADO: apaga tudo!)
+npx prisma migrate reset
+
+# Ver logs do Prisma
+npx prisma db push --help
+```
+
+---
+
+## 🔍 VERIFICAR SE ESTÁ FUNCIONANDO
+
+1. **Abra o Prisma Studio:**
+   ```bash
+   npm run db:studio
+   ```
+   - Abre em: http://localhost:5555
+   - Você deve ver as tabelas: users, metric_entries, messages, config
+
+2. **Teste no código:**
+   ```typescript
+   import prisma from '@/lib/prisma';
+   
+   const users = await prisma.user.findMany();
+   console.log(users); // Deve mostrar os 3 usuários
+   ```
+
+---
+
+## ⚠️ PROBLEMAS COMUNS
+
+### "Can't reach database server"
+- Verifique se o PostgreSQL está rodando
+- Confirme a `DATABASE_URL` no `.env`
+- Teste conexão: `psql -h HOST -U USER -d DATABASE`
+
+### "Prisma Client not generated"
+- Execute: `npm run db:generate`
+
+### "Migration failed"
+- Use `npm run db:push` ao invés de `migrate` (mais simples)
+
+---
+
+## 📝 PRÓXIMO PASSO: ATUALIZAR AS ROTAS DA API
+
+Depois de configurar o banco, precisamos atualizar os arquivos:
+- [app/api/metricas/route.ts](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/app/api/metricas/route.ts)
+- [app/api/metrics/history/route.ts](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/app/api/metrics/history/route.ts)
+- [app/api/auth/login/route.ts](file:///Users/clovisalves/.gemini/antigravity/brain/5800c1ee-9bec-4517-88d2-6647121b859e/sales-gamification/app/api/auth/login/route.ts)
+
+Para usar Prisma ao invés do JSON.
+
+Quer que eu faça isso agora?

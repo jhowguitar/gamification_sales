@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  metricEntries MetricEntry[]
+  sentMessages  Message[]     @relation("SentMessages")
+  receivedMessages Message[]  @relation("ReceivedMessages")
+
+  @@map("users")
+}
+
+model MetricEntry {
+  id              String   @id @default(cuid())
+  userId          String
+  week            String
+  leadsExecuted   Int      @default(0)
+  leadsQualified  Int      @default(0)
+  meetings        Int      @default(0)
+  proposals       Int      @default(0)
+  closings        Int      @default(0)
+  status          Status   @default(PENDING)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relação
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("metric_entries")
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  fromUserId String
+  toUserId   String
+  title     String
+  content   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  from User @relation("SentMessages", fields: [fromUserId], references: [id], onDelete: Cascade)
+  to   User @relation("ReceivedMessages", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@index([toUserId])
+  @@index([fromUserId])
+  @@map("messages")
+}
+
+model Config {
+  id                    String @id @default(cuid())
+  weeklyGoal            Int    @default(50000)
+  monthlyGoal           Int    @default(200000)
+  leadExecutedValue     Int    @default(10)
+  leadQualifiedValue    Int    @default(20)
+  closerBonusValue      Int    @default(500)
+  closerBonusThreshold  Int    @default(17000)
+  ceoMessage            String @db.Text @default("<h1>Vamos bater a meta!</h1><p>Conto com todos vocês para alcançarmos nossos objetivos este mês.</p>")
+  awardsBannerImageUrl  String @default("https://images.unsplash.com/photo-1533227297464-c751417b02b8?auto=format&fit=crop&q=80&w=1000")
+  awardsBannerTitle     String @default("Prêmio do Mês")
+  awardsBannerDescription String @default("Um jantar no melhor restaurante da cidade!")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("config")
+}
+
+enum Role {
+  SDR
+  CLOSER
+  LEADER
+  CEO
+}
+
+enum Status {
+  PENDING
+  VALIDATED
+  REJECTED
+}
