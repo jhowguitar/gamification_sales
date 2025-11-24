@@ -25,8 +25,32 @@
       "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=Closer"
     }
   ],
-  "leadEntries": [],
-  "saleEntries": [],
+  "leadEntries": [
+    {
+      "id": "rhjk6z7hz",
+      "userId": "2",
+      "leadsExecuted": 12,
+      "leadsQualified": 5,
+      "createdAt": "2025-11-24T03:20:06.593Z"
+    },
+    {
+      "id": "wetponley",
+      "userId": "2",
+      "leadsExecuted": 2,
+      "leadsQualified": 3,
+      "createdAt": "2025-11-24T03:20:20.777Z"
+    }
+  ],
+  "saleEntries": [
+    {
+      "id": "h3u4237up",
+      "userId": "3",
+      "clientName": "JOvaldo",
+      "setupValue": 2000,
+      "paymentMethod": "PIX",
+      "createdAt": "2025-11-24T03:21:31.423Z"
+    }
+  ],
   "messages": [],
   "config": {
     "weeklyGoal": 50000,

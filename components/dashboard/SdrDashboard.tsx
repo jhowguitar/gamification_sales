@@ -6,6 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Trophy, Target, TrendingUp, CheckCircle2, Loader2, DollarSign } from 'lucide-react';
 import { useState } from 'react';
 import { MoneyRain } from '@/components/ui/money-rain';
+import { ProgressBar } from './ProgressBar';
+import { DashboardBanner } from './DashboardBanner';
+import { TopPerformers } from './TopPerformers';
 
 interface SdrDashboardProps {
     data: any;
@@ -55,32 +58,40 @@ export function SdrDashboard({ data, user }: SdrDashboardProps) {
         }
     };
 
-    // Filter ranking to show only SDRs (although API should already do this, we enforce strict view)
-    const sdrRanking = data.rankings.sdr;
-
     return (
         <div className="space-y-8">
             {showMoneyRain && <MoneyRain />}
 
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Olá, {user.name} 👋</h1>
-                    <p className="text-muted-foreground">Vamos bater a meta de hoje?</p>
+            {/* Top Section: Progress Bar & Welcome */}
+            <div className="space-y-6">
+                <div className="flex justify-between items-end">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white">Olá, {user.name} 👋</h1>
+                        <p className="text-muted-foreground">Vamos bater a meta de hoje?</p>
+                    </div>
+                    <div className="bg-primary/20 px-4 py-2 rounded-full border border-primary/50">
+                        <span className="text-primary font-bold flex items-center gap-2">
+                            <Trophy className="w-4 h-4" />
+                            SDR Elite
+                        </span>
+                    </div>
                 </div>
-                <div className="bg-primary/20 px-4 py-2 rounded-full border border-primary/50">
-                    <span className="text-primary font-bold flex items-center gap-2">
-                        <Trophy className="w-4 h-4" />
-                        Nível: SDR Elite
-                    </span>
-                </div>
+
+                <ProgressBar
+                    current={data.userStats?.commission || 0}
+                    target={2000} // Example target for SDR commission
+                    label="Comissão Semanal"
+                />
             </div>
 
+            {/* Visual Dashboard Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Input Module */}
-                <div className="lg:col-span-2">
-                    <Card className="h-full border-primary/20">
+                <div className="lg:col-span-2 space-y-8">
+                    <DashboardBanner />
+
+                    <Card className="h-full border-primary/20 bg-gradient-to-br from-secondary/30 to-background">
                         <CardHeader>
-                            <CardTitle>Preencher Resultados da Semana</CardTitle>
+                            <CardTitle className="text-primary">Preencher Resultados</CardTitle>
                             <CardDescription>
                                 Certifique-se que os dados conferem com o CRM, o sistema fará double-check automático.
                             </CardDescription>
@@ -89,32 +100,35 @@ export function SdrDashboard({ data, user }: SdrDashboardProps) {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Leads Executados</label>
+                                        <label className="text-sm font-medium text-gray-300">Leads Executados</label>
                                         <Input
                                             type="number"
                                             placeholder="0"
                                             value={leadsExecuted}
                                             onChange={(e) => setLeadsExecuted(e.target.value)}
                                             required
+                                            className="bg-secondary/50 border-white/10 focus:border-primary/50"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Leads Qualificados</label>
+                                        <label className="text-sm font-medium text-gray-300">Leads Qualificados</label>
                                         <Input
                                             type="number"
                                             placeholder="0"
                                             value={leadsQualified}
                                             onChange={(e) => setLeadsQualified(e.target.value)}
                                             required
+                                            className="bg-secondary/50 border-white/10 focus:border-primary/50"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium">Compares</label>
+                                        <label className="text-sm font-medium text-gray-300">Compares</label>
                                         <Input
                                             type="number"
                                             placeholder="0"
                                             value={compares}
                                             onChange={(e) => setCompares(e.target.value)}
+                                            className="bg-secondary/50 border-white/10 focus:border-primary/50"
                                         />
                                     </div>
                                 </div>
@@ -125,7 +139,7 @@ export function SdrDashboard({ data, user }: SdrDashboardProps) {
                                         <span>VALIDANDO NO CRM (ClickUp)...</span>
                                     </div>
                                 ) : (
-                                    <Button type="submit" disabled={loading} className="w-full h-12 text-lg bg-primary hover:bg-primary/90">
+                                    <Button type="submit" disabled={loading} className="w-full h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20">
                                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Enviar Resultados'}
                                     </Button>
                                 )}
@@ -134,44 +148,12 @@ export function SdrDashboard({ data, user }: SdrDashboardProps) {
                     </Card>
                 </div>
 
-                {/* Stats & Ranking */}
+                {/* Right Column: Top Performers */}
                 <div className="space-y-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-sm font-medium text-muted-foreground">Sua Comissão (Semana)</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-primary flex items-center gap-2">
-                                <DollarSign className="w-6 h-6" />
-                                R$ {data.userStats?.commission?.toFixed(2) || '0.00'}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Trophy className="w-5 h-5 text-yellow-500" />
-                                Ranking SDRs
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {sdrRanking.map((u: any, index: number) => (
-                                    <div key={u.id} className={`flex items-center justify-between p-3 rounded-xl ${u.id === user.id ? 'bg-primary/20 border border-primary/50' : 'bg-secondary/30'}`}>
-                                        <div className="flex items-center gap-3">
-                                            <div className="font-bold text-muted-foreground">#{index + 1}</div>
-                                            <div>
-                                                <p className="font-medium">{u.name}</p>
-                                                <p className="text-xs text-muted-foreground">{u.leads} leads</p>
-                                            </div>
-                                        </div>
-                                        <div className="font-bold">R$ {u.commission.toFixed(0)}</div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <TopPerformers
+                        sdrRanking={data.rankings.sdr}
+                        closerRanking={data.rankings.closer}
+                    />
                 </div>
             </div>
         </div>
