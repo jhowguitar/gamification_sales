@@ -67,8 +67,8 @@ export function Sidebar() {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-200 relative overflow-hidden",
                                     isActive
-                                        ? "bg-primary text-white shadow-lg shadow-primary/25"
-                                        : "text-muted-foreground hover:bg-secondary hover:text-secondary-foreground"
+                                        ? "bg-primary text-white shadow-md"
+                                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground hover:shadow-sm"
                                 )}
                             >
                                 <item.icon className="w-5 h-5" />

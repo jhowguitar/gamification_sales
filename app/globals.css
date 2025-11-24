@@ -16,48 +16,57 @@
 }
 
 :root {
-  /* Exact colors from reference screenshot */
+  /* Exact colors as specified */
   --background: #F5F3FF;
-  --foreground: #1e1b4b;
+  --foreground: #1A1A1A;
+  /* Primary text */
 
   --card: #FFFFFF;
-  --card-foreground: #1e1b4b;
+  --card-foreground: #1A1A1A;
 
   --popover: #FFFFFF;
-  --popover-foreground: #1e1b4b;
+  --popover-foreground: #1A1A1A;
 
-  /* Primary purple gradient (Meta Mensal card) */
+  /* Primary purple */
   --primary: #8F4BFF;
-  --primary-mid: #7B35F7;
-  --primary-end: #6B25E8;
   --primary-foreground: #ffffff;
 
   --secondary: #ede9fe;
-  --secondary-foreground: #5b21b6;
+  --secondary-foreground: #6F6A80;
+  /* Secondary text */
 
   --muted: #f5f3ff;
-  --muted-foreground: #64748b;
+  --muted-foreground: #6F6A80;
+  /* Secondary text */
 
   --accent: #ddd6fe;
-  --accent-foreground: #4c1d95;
+  --accent-foreground: #1A1A1A;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  /* Card borders/shadows */
   --border: #E7DFFC;
   --input: #E7DFFC;
   --ring: #8F4BFF;
 
-  /* Gold medal color */
   --gold: #F3C130;
 
   --radius: 1.5rem;
+
+  /* Sidebar colors */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-primary: #8F4BFF;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #F5F3FF;
+  --sidebar-accent-foreground: #1A1A1A;
+  --sidebar-border: #E7DFFC;
+  --sidebar-ring: #8F4BFF;
 }
 
 body {
   background: #F5F3FF;
-  color: var(--foreground);
+  color: #1A1A1A;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
 }
