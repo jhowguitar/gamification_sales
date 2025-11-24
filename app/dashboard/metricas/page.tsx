@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar, Loader2 } from 'lucide-react';
 
 export default function MetricasPage() {
+    const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -21,16 +22,22 @@ export default function MetricasPage() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const res = await fetch('/api/dashboard');
-            if (res.status === 401) {
-                redirect('/login');
+            try {
+                const res = await fetch('/api/dashboard');
+                if (res.status === 401) {
+                    router.push('/login');
+                    return;
+                }
+                const json = await res.json();
+                setUser(json.user);
+            } catch (error) {
+                console.error('Error fetching user:', error);
+            } finally {
+                setLoading(false);
             }
-            const json = await res.json();
-            setUser(json.user);
-            setLoading(false);
         };
         fetchUser();
-    }, []);
+    }, [router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
