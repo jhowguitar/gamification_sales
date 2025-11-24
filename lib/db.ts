@@ -53,6 +53,7 @@ export interface MetricEntry {
     meetings: number;
     proposals: number;
     closings: number;
+    status: 'pending' | 'validated' | 'rejected';
     createdAt: string;
 }
 

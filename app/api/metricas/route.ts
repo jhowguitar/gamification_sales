@@ -31,10 +31,14 @@ export async function POST(request: Request) {
         meetings: meetings || 0,
         proposals: proposals || 0,
         closings: closings || 0,
+        status: 'pending' as const,
         createdAt: new Date().toISOString(),
     };
 
     db.metricEntries.push(metricEntry);
+    // Import saveDB at the top first
+    const { saveDB } = require('@/lib/db');
+    saveDB(db);
 
     return NextResponse.json({ success: true, entry: metricEntry });
 }
