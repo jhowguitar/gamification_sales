@@ -23,7 +23,7 @@ export function Confetti() {
                         scale: Math.random() * 0.5 + 0.5
                     }}
                     animate={{
-                        y: window.innerHeight + 20,
+                        y: typeof window !== 'undefined' ? window.innerHeight + 20 : 1000,
                         x: `calc(${Math.random() * 100}vw - 50vw)`,
                         rotate: Math.random() * 360 + 360,
                     }}
@@ -33,7 +33,7 @@ export function Confetti() {
                         delay: Math.random() * 0.2,
                         ease: "linear"
                     }}
-                    className="absolute w-3 h-3 rounded-sm"
+                    className="absolute w-3 h-3 rounded-sm select-none"
                     style={{
                         backgroundColor: ['#FFC700', '#FF0000', '#2E3192', '#41BBC7'][Math.floor(Math.random() * 4)]
                     }}

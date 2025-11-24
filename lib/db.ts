@@ -9,7 +9,7 @@ export interface User {
     id: string;
     name: string;
     email: string;
-    password: string; // In a real app, this would be hashed
+    password: string;
     role: Role;
     avatarUrl?: string;
 }
@@ -17,7 +17,7 @@ export interface User {
 export interface LeadEntry {
     id: string;
     userId: string;
-    week: string; // Format: "YYYY-Www"
+    week: string;
     leadsExecuted: number;
     leadsQualified: number;
     createdAt: string;
@@ -113,19 +113,42 @@ const initialData: DatabaseSchema = {
     }
 };
 
+// In-memory fallback for Vercel (since it's read-only filesystem)
+let memoryDB: DatabaseSchema | null = null;
+
 export function getDB(): DatabaseSchema {
-    if (!fs.existsSync(DB_PATH)) {
-        fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2));
+    if (memoryDB) return memoryDB;
+
+    try {
+        if (!fs.existsSync(DB_PATH)) {
+            // If we can't write, we just return initial data
+            try {
+                fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2));
+            } catch (e) {
+                console.warn('Could not write to file system, using in-memory DB');
+                memoryDB = JSON.parse(JSON.stringify(initialData));
+                return memoryDB!;
+            }
+        }
+        const data = fs.readFileSync(DB_PATH, 'utf-8');
+        memoryDB = JSON.parse(data);
+        return memoryDB!;
+    } catch (error) {
+        // Fallback if file read fails
+        memoryDB = JSON.parse(JSON.stringify(initialData));
+        return memoryDB!;
     }
-    const data = fs.readFileSync(DB_PATH, 'utf-8');
-    return JSON.parse(data);
 }
 
 export function saveDB(data: DatabaseSchema) {
-    fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+    memoryDB = data;
+    try {
+        fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.warn('Could not write to file system (expected on Vercel), data saved to memory only.');
+    }
 }
 
-// Helper functions
 export async function getUser(email: string) {
     const db = getDB();
     return db.users.find(u => u.email === email);

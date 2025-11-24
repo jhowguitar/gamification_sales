@@ -19,7 +19,7 @@ export function MoneyRain() {
                     key={i}
                     initial={{ y: -100, x: Math.random() * window.innerWidth, opacity: 0 }}
                     animate={{
-                        y: window.innerHeight + 100,
+                        y: typeof window !== 'undefined' ? window.innerHeight + 100 : 1000,
                         opacity: [0, 1, 1, 0],
                         rotate: Math.random() * 360
                     }}
@@ -29,7 +29,7 @@ export function MoneyRain() {
                         delay: Math.random() * 0.5,
                         ease: "linear"
                     }}
-                    className="absolute text-4xl"
+                    className="absolute text-4xl select-none"
                 >
                     {Math.random() > 0.5 ? '💰' : '💵'}
                 </motion.div>
