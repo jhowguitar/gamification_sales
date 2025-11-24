@@ -6,8 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Calendar, Loader2, TrendingUp, Target } from 'lucide-react';
-import { MoneyRain } from '@/components/ui/money-rain';
-import { Confetti } from '@/components/ui/confetti';
 
 export default function MetricasPage() {
     const router = useRouter();
@@ -15,8 +13,6 @@ export default function MetricasPage() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [validating, setValidating] = useState(false);
-    const [showMoneyRain, setShowMoneyRain] = useState(false);
-    const [showConfetti, setShowConfetti] = useState(false);
 
     // SDR fields
     const [selectedWeek, setSelectedWeek] = useState('Semana Atual (24/11 - 30/11)');
@@ -37,10 +33,15 @@ export default function MetricasPage() {
                     router.push('/login');
                     return;
                 }
+                if (!res.ok) {
+                    throw new Error('Failed to fetch user');
+                }
                 const json = await res.json();
+                console.log('User loaded:', json.user);
                 setUser(json.user);
             } catch (error) {
                 console.error('Error fetching user:', error);
+                setUser(null);
             } finally {
                 setLoading(false);
             }
@@ -68,11 +69,11 @@ export default function MetricasPage() {
             });
 
             if (res.ok) {
-                setShowMoneyRain(true);
-                setTimeout(() => setShowMoneyRain(false), 5000);
+                alert('Métricas enviadas e validadas com sucesso! 🚀');
                 setShows('');
                 setQualified('');
-                alert('Métricas enviadas e validadas com sucesso! 🚀');
+            } else {
+                alert('Erro ao registrar métricas.');
             }
         } catch (error) {
             alert('Erro ao enviar dados.');
@@ -104,8 +105,6 @@ export default function MetricasPage() {
             if (res.ok) {
                 const data = await res.json();
                 if (data.bonusEligible) {
-                    setShowConfetti(true);
-                    setTimeout(() => setShowConfetti(false), 8000);
                     alert('PARABÉNS! Meta batida! 🎉');
                 } else {
                     alert('Venda registrada e validada com sucesso! 🚀');
@@ -115,6 +114,8 @@ export default function MetricasPage() {
                 setSetupValue('');
                 setInstallments('');
                 setPaymentMethod('PIX');
+            } else {
+                alert('Erro ao registrar venda.');
             }
         } catch (error) {
             alert('Erro ao enviar dados.');
@@ -137,18 +138,24 @@ export default function MetricasPage() {
                 <Card>
                     <CardContent className="p-12 text-center">
                         <p className="text-muted-foreground">Erro ao carregar dados do usuário.</p>
+                        <Button onClick={() => router.push('/login')} className="mt-4">
+                            Fazer Login
+                        </Button>
                     </CardContent>
                 </Card>
             </div>
         );
     }
 
-    if (user.role === 'CEO') {
+    if (user.role === 'CEO' || user.role === 'LEADER') {
         return (
             <div className="p-6">
                 <Card>
                     <CardContent className="p-12 text-center">
-                        <p className="text-muted-foreground">CEO não tem acesso à página de Métricas.</p>
+                        <p className="text-muted-foreground">CEO e Líderes não têm acesso à página de Métricas.</p>
+                        <Button onClick={() => router.push('/dashboard')} className="mt-4">
+                            Voltar ao Início
+                        </Button>
                     </CardContent>
                 </Card>
             </div>
