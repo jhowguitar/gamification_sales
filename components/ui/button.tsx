@@ -43,6 +43,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     sizes[size],
                     className
                 )}
+                style={{ borderRadius: '20px' }}
                 ref={ref}
                 {...props}
             />
