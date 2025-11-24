@@ -28,10 +28,49 @@ export default function AdminPage() {
         description: 'Um jantar no melhor restaurante da cidade!'
     });
 
+    // Load initial data
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                // Check auth/role (simplified)
+                // In a real app, we'd have a dedicated /me endpoint
+                const res = await fetch('/api/config');
+                if (res.ok) {
+                    const data = await res.json();
+                    setConfig(data.config);
+                    setCeoMessage(data.ceoMessage);
+                    setAwardsBanner(data.awardsBanner);
+                }
+            } catch (e) {
+                console.error('Failed to load config');
+            }
+        };
+        loadData();
+    }, []);
+
     const handleSaveConfig = async () => {
         setLoading(true);
-        // In a real app, POST to API. For prototype, we'll just simulate.
-        setTimeout(() => setLoading(false), 1000);
+        try {
+            const res = await fetch('/api/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    config,
+                    ceoMessage,
+                    awardsBanner
+                }),
+            });
+
+            if (res.ok) {
+                alert('Configurações salvas com sucesso!');
+            } else {
+                alert('Erro ao salvar. Verifique se você é o CEO.');
+            }
+        } catch (error) {
+            alert('Erro de conexão.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -178,14 +217,68 @@ export default function AdminPage() {
                 <Card className="border-none shadow-lg">
                     <CardHeader>
                         <CardTitle>Gerenciar Usuários</CardTitle>
-                        <CardDescription>Adicione ou edite membros da equipe.</CardDescription>
+                        <CardDescription>Adicione novos membros à equipe.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-center py-8 text-muted-foreground">
-                            <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                            <p>Funcionalidade de gestão de usuários simplificada para este protótipo.</p>
-                            <p className="text-sm">Edite o arquivo <code>lib/db.ts</code> para adicionar usuários manualmente.</p>
-                        </div>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            setLoading(true);
+                            const form = e.target as HTMLFormElement;
+                            const formData = new FormData(form);
+
+                            try {
+                                const res = await fetch('/api/users', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify(Object.fromEntries(formData)),
+                                });
+
+                                if (res.ok) {
+                                    alert('Usuário criado com sucesso! Convite enviado por e-mail.');
+                                    form.reset();
+                                } else {
+                                    const data = await res.json();
+                                    alert(data.error || 'Erro ao criar usuário');
+                                }
+                            } catch (err) {
+                                alert('Erro ao conectar com o servidor');
+                            } finally {
+                                setLoading(false);
+                            }
+                        }} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Nome Completo</label>
+                                    <Input name="name" required placeholder="Ex: João Silva" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">E-mail</label>
+                                    <Input name="email" type="email" required placeholder="joao@empresa.com" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Senha Inicial</label>
+                                    <Input name="password" type="password" required placeholder="******" />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium">Função</label>
+                                    <select name="role" className="flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                        <option value="SDR">SDR</option>
+                                        <option value="CLOSER">Closer</option>
+                                        <option value="LEADER">Líder</option>
+                                        <option value="CEO">CEO</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-sm font-medium">Foto (URL)</label>
+                                    <Input name="avatarUrl" placeholder="https://..." />
+                                    <p className="text-xs text-muted-foreground">Deixe em branco para gerar um avatar automático.</p>
+                                </div>
+                            </div>
+                            <Button type="submit" disabled={loading} className="w-full">
+                                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Users className="w-4 h-4 mr-2" />}
+                                Cadastrar Usuário e Enviar Convite
+                            </Button>
+                        </form>
                     </CardContent>
                 </Card>
             )}

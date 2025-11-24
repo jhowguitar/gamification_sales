@@ -4,6 +4,8 @@ import { Trophy, Target, TrendingUp, Award } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
+export const dynamic = 'force-dynamic';
+
 async function getDashboardData() {
     // In a real app, we might fetch from an API, but here we can access DB directly
     // since this is a Server Component.
