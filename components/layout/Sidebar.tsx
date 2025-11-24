@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Trophy, Target, MessageSquare, Settings, LogOut, User, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -48,11 +49,17 @@ export function Sidebar() {
             {/* Desktop Sidebar */}
             <div className="hidden md:flex flex-col w-64 bg-card border-r border-border h-screen fixed left-0 top-0 p-6">
                 <div className="flex items-center gap-3 mb-10">
-                    <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-                        <Trophy className="w-6 h-6 text-white" />
+                    <div className="relative w-12 h-12">
+                        <Image
+                            src="/logo.png"
+                            alt="Start Sales Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
                     </div>
                     <div>
-                        <h1 className="font-bold text-xl tracking-tight">SalesGame</h1>
+                        <h1 className="font-bold text-xl tracking-tight text-primary">Start Sales</h1>
                         <p className="text-xs text-muted-foreground">Gamification System</p>
                     </div>
                 </div>

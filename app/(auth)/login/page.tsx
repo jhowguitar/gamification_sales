@@ -41,7 +41,7 @@ export default function LoginPage() {
     return (
         <Card className="border-none shadow-2xl bg-white/95 backdrop-blur">
             <CardHeader className="space-y-1 text-center">
-                <CardTitle className="text-2xl font-bold text-primary">SalesGame</CardTitle>
+                <CardTitle className="text-2xl font-bold text-primary">Start Sales</CardTitle>
                 <CardDescription>Entre para acessar suas metas e rankings</CardDescription>
             </CardHeader>
             <CardContent>
