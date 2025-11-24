@@ -1,7 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-const DB_PATH = path.join(process.cwd(), 'data.json');
+// Determine DB path: use /tmp in production (Vercel), otherwise local data.json
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+const DB_PATH = IS_PRODUCTION
+    ? path.join('/tmp', 'data.json')
+    : path.join(process.cwd(), 'data.json');
 
 export type Role = 'SDR' | 'CLOSER' | 'LEADER' | 'CEO';
 
@@ -129,7 +133,7 @@ const initialData: DatabaseSchema = {
     }
 };
 
-// In-memory fallback for Vercel (since it's read-only filesystem)
+// In-memory fallback
 let memoryDB: DatabaseSchema | null = null;
 
 export function getDB(): DatabaseSchema {
@@ -137,21 +141,20 @@ export function getDB(): DatabaseSchema {
 
     try {
         if (!fs.existsSync(DB_PATH)) {
-            // If we can't write, we just return initial data
-            try {
-                fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2));
-            } catch (e) {
-                console.warn('Could not write to file system, using in-memory DB');
-                memoryDB = JSON.parse(JSON.stringify(initialData));
-                return memoryDB!;
-            }
+            // Initialize DB file
+            fs.writeFileSync(DB_PATH, JSON.stringify(initialData, null, 2));
+            memoryDB = JSON.parse(JSON.stringify(initialData));
+            return memoryDB!;
         }
         const data = fs.readFileSync(DB_PATH, 'utf-8');
         memoryDB = JSON.parse(data);
         return memoryDB!;
     } catch (error) {
+        console.warn(`Error reading DB from ${DB_PATH}, using in-memory fallback`, error);
         // Fallback if file read fails
-        memoryDB = JSON.parse(JSON.stringify(initialData));
+        if (!memoryDB) {
+            memoryDB = JSON.parse(JSON.stringify(initialData));
+        }
         return memoryDB!;
     }
 }
@@ -161,7 +164,7 @@ export function saveDB(data: DatabaseSchema) {
     try {
         fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
     } catch (error) {
-        console.warn('Could not write to file system (expected on Vercel), data saved to memory only.');
+        console.warn(`Could not write to file system at ${DB_PATH}, data saved to memory only.`, error);
     }
 }
 

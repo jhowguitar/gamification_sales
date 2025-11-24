@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getDB } from '@/lib/db';
+import { getDB, saveDB } from '@/lib/db';
 
 export async function POST(request: Request) {
     const cookieStore = await cookies();
@@ -36,8 +36,6 @@ export async function POST(request: Request) {
     };
 
     db.metricEntries.push(metricEntry);
-    // Import saveDB at the top first
-    const { saveDB } = require('@/lib/db');
     saveDB(db);
 
     return NextResponse.json({ success: true, entry: metricEntry });
