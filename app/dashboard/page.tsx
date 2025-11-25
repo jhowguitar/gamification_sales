@@ -23,35 +23,42 @@ async function getDashboardData(userId: string, role: string) {
         }
     });
 
+    // Converter Decimals para Number
+    const usersWithNumbers = allUsers.map(u => ({
+        ...u,
+        totalCommission: Number(u.totalCommission),
+        totalSales: Number(u.totalSales)
+    }));
+
     // Ranking SDR
-    const sdrRanking = allUsers
+    const sdrRanking = usersWithNumbers
         .filter(u => u.role === 'SDR')
         .map(u => ({
             ...u,
-            commission: Number(u.totalCommission),
-            leads: 0 // Pode ser calculado se necessário
+            commission: u.totalCommission,
+            leads: 0
         }))
         .sort((a, b) => b.commission - a.commission);
 
     // Ranking Closer
-    const closerRanking = allUsers
+    const closerRanking = usersWithNumbers
         .filter(u => u.role === 'CLOSER')
         .map(u => ({
             ...u,
-            totalSales: Number(u.totalSales),
-            salesCount: 0 // Pode ser calculado se necessário
+            totalSales: u.totalSales,
+            salesCount: 0
         }))
         .sort((a, b) => b.totalSales - a.totalSales);
 
     // User stats
-    const currentUser = allUsers.find(u => u.id === userId);
+    const currentUser = usersWithNumbers.find(u => u.id === userId);
     let userStats = {};
 
     if (currentUser) {
         if (role === 'SDR') {
-            userStats = { commission: Number(currentUser.totalCommission) };
+            userStats = { commission: currentUser.totalCommission };
         } else if (role === 'CLOSER') {
-            userStats = { totalSales: Number(currentUser.totalSales) };
+            userStats = { totalSales: currentUser.totalSales };
         }
     }
 
