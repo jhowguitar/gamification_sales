@@ -11,10 +11,20 @@ async function main() {
             id: 'default',
             weeklyGoal: 50000,
             monthlyGoal: 200000,
-            leadExecutedValue: 10,
-            leadQualifiedValue: 20,
-            closerBonusValue: 500,
-            closerBonusThreshold: 17000,
+            // SDR Star
+            sdrStarShow: 5,
+            sdrStarQualified: 15,
+            // SDR Pro
+            sdrProShow: 10,
+            sdrProQualified: 20,
+            // SDR Elite
+            sdrEliteShow: 15,
+            sdrEliteQualified: 25,
+            // Closer Bonuses
+            closerBonus30k: 10,
+            closerBonus45k: 20,
+            closerBonus50k: 25,
+            closerBonus65k: 35,
             ceoMessage: '<h1>Vamos bater a meta!</h1><p>Conto com todos vocês para alcançarmos nossos objetivos este mês.</p>',
             awardsBannerImageUrl: 'https://images.unsplash.com/photo-1533227297464-c751417b02b8?auto=format&fit=crop&q=80&w=1000',
             awardsBannerTitle: 'Prêmio do Mês',
