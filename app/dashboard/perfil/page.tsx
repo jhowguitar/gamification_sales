@@ -13,6 +13,7 @@ export default function PerfilPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
     const [user, setUser] = useState<any>(null);
     const [name, setName] = useState('');
     const [selectedSticker, setSelectedSticker] = useState(1);
@@ -27,13 +28,14 @@ export default function PerfilPage() {
             if (res.ok) {
                 const data = await res.json();
                 setUser(data.user);
-                setName(data.user.name);
+                setName(data.user.name || '');
                 setSelectedSticker(data.user.avatarSticker || 1);
             } else {
                 router.push('/login');
             }
         } catch (error) {
             console.error('Error fetching profile:', error);
+            setError('Erro ao carregar perfil');
         } finally {
             setLoading(false);
         }
@@ -41,6 +43,7 @@ export default function PerfilPage() {
 
     const handleSave = async () => {
         setSaving(true);
+        setError('');
         try {
             const res = await fetch('/api/user/profile', {
                 method: 'PATCH',
@@ -56,11 +59,11 @@ export default function PerfilPage() {
                 setUser(data.user);
                 alert('Perfil atualizado com sucesso! ✅');
             } else {
-                alert('Erro ao atualizar perfil.');
+                setError('Erro ao atualizar perfil.');
             }
         } catch (error) {
             console.error('Error updating profile:', error);
-            alert('Erro ao conectar com o servidor.');
+            setError('Erro ao conectar com o servidor.');
         } finally {
             setSaving(false);
         }
@@ -74,11 +77,19 @@ export default function PerfilPage() {
         );
     }
 
-    if (!user) return null;
+    if (!user) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-muted-foreground">Usuário não encontrado</p>
+            </div>
+        );
+    }
 
-    const levelColor = getLevelColor(user.level);
-    const levelIcon = getLevelIcon(user.level);
-    const levelName = getLevelName(user.level);
+    const levelColor = getLevelColor(user.level || 'STAR');
+    const levelIcon = getLevelIcon(user.level || 'STAR');
+    const levelName = getLevelName(user.level || 'STAR');
+    const totalValue = user.role === 'SDR' ? user.totalCommission : user.totalSales;
+    const memberSince = user.createdAt ? new Date(user.createdAt).toLocaleDateString('pt-BR') : 'N/A';
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -86,6 +97,12 @@ export default function PerfilPage() {
                 <h1 className="text-3xl font-bold text-foreground">Meu Perfil</h1>
                 <p className="text-muted-foreground">Personalize suas informações</p>
             </div>
+
+            {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    {error}
+                </div>
+            )}
 
             {/* Card de Nível */}
             <Card className={`bg-gradient-to-br ${levelColor} text-white border-0`}>
@@ -98,7 +115,7 @@ export default function PerfilPage() {
                                 <span>{user.role} {levelName}</span>
                             </h2>
                         </div>
-                        <AvatarSticker stickerId={user.avatarSticker || 1} size="xl" />
+                        <AvatarSticker stickerId={selectedSticker} size="xl" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 mt-6">
@@ -107,14 +124,12 @@ export default function PerfilPage() {
                                 {user.role === 'SDR' ? 'Comissão Total' : 'Vendas Totais'}
                             </p>
                             <p className="text-2xl font-bold">
-                                R$ {(user.role === 'SDR' ? user.totalCommission : user.totalSales).toFixed(2).replace('.', ',')}
+                                R$ {Number(totalValue || 0).toFixed(2).replace('.', ',')}
                             </p>
                         </div>
                         <div className="bg-white/10 rounded-lg p-3">
                             <p className="text-white/80 text-xs mb-1">Membro desde</p>
-                            <p className="text-lg font-semibold">
-                                {new Date(user.createdAt).toLocaleDateString('pt-BR')}
-                            </p>
+                            <p className="text-lg font-semibold">{memberSince}</p>
                         </div>
                     </div>
                 </CardContent>
