@@ -103,7 +103,16 @@ export default async function DashboardPage() {
         redirect('/login');
     }
 
+    // Convert Decimals to Numbers for client component
+    const userSerialized = {
+        ...user,
+        totalCommission: Number(user.totalCommission),
+        totalSales: Number(user.totalSales),
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString()
+    };
+
     const data = await getDashboardData(userId, user.role);
 
-    return <InicioOverview data={data} user={user} />;
+    return <InicioOverview data={data} user={userSerialized} />;
 }
