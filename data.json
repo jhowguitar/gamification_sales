@@ -70,7 +70,7 @@
   ],
   "messages": [],
   "config": {
-    "weeklyGoal": 10000,
+    "weeklyGoal": 25000,
     "monthlyGoal": 10000,
     "leadExecutedValue": 10,
     "leadQualifiedValue": 10,
