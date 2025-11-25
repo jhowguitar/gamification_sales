@@ -11,7 +11,7 @@ const navItems = [
     { name: 'Início', href: '/dashboard', icon: LayoutDashboard },
     { name: 'Métricas', href: '/dashboard/metricas', icon: BarChart3, roles: ['SDR', 'CLOSER'] },
     { name: 'Ranking', href: '/dashboard/ranking', icon: Trophy },
-    { name: 'Perfil', href: '/dashboard/profile', icon: User },
+    { name: 'Perfil', href: '/dashboard/perfil', icon: User },
     // Only show Admin for CEO (This logic should ideally be server-side or checked against user role prop)
     { name: 'Admin', href: '/dashboard/admin', icon: Settings, roles: ['CEO'] },
 ];
