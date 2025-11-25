@@ -18,6 +18,10 @@ model User {
   password  String
   role      Role
   avatarUrl String?
+  avatarSticker Int?   @default(1) // 1-8 para os stickers
+  level     UserLevel @default(STAR) // Star, Pro, Elite
+  totalCommission Decimal @default(0) @db.Decimal(10, 2) // Total acumulado no mês
+  totalSales      Decimal @default(0) @db.Decimal(10, 2) // Total de vendas (Closer)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -33,11 +37,22 @@ model MetricEntry {
   id              String   @id @default(cuid())
   userId          String
   week            String
+  
+  // SDR fields
   leadsExecuted   Int      @default(0)
   leadsQualified  Int      @default(0)
   meetings        Int      @default(0)
   proposals       Int      @default(0)
   closings        Int      @default(0)
+  
+  // Closer fields
+  clientName      String?
+  saleValue       Decimal? @db.Decimal(10, 2)
+  paymentMethod   String?
+  installments    Int?
+  
+  // Common fields
+  commission      Decimal  @default(0) @db.Decimal(10, 2) // Comissão calculada
   status          Status   @default(PENDING)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -71,16 +86,35 @@ model Message {
 
 model Config {
   id                    String @id @default(cuid())
+  
+  // Metas
   weeklyGoal            Int    @default(50000)
   monthlyGoal           Int    @default(200000)
-  leadExecutedValue     Int    @default(10)
-  leadQualifiedValue    Int    @default(20)
-  closerBonusValue      Int    @default(500)
-  closerBonusThreshold  Int    @default(17000)
+  
+  // SDR Star (até R$ 2.500)
+  sdrStarShow           Int    @default(5)
+  sdrStarQualified      Int    @default(15)
+  
+  // SDR Pro (até R$ 5.000)
+  sdrProShow            Int    @default(10)
+  sdrProQualified       Int    @default(20)
+  
+  // SDR Elite (até R$ 10.000)
+  sdrEliteShow          Int    @default(15)
+  sdrEliteQualified     Int    @default(25)
+  
+  // Closer Bonuses (% sobre comissão)
+  closerBonus30k        Int    @default(10)  // +10% acima de 30k
+  closerBonus45k        Int    @default(20)  // +20% acima de 45k
+  closerBonus50k        Int    @default(25)  // +25% acima de 50k
+  closerBonus65k        Int    @default(35)  // +35% acima de 65k
+  
+  // Mensagens e Banners
   ceoMessage            String @db.Text @default("<h1>Vamos bater a meta!</h1><p>Conto com todos vocês para alcançarmos nossos objetivos este mês.</p>")
   awardsBannerImageUrl  String @default("https://images.unsplash.com/photo-1533227297464-c751417b02b8?auto=format&fit=crop&q=80&w=1000")
   awardsBannerTitle     String @default("Prêmio do Mês")
   awardsBannerDescription String @default("Um jantar no melhor restaurante da cidade!")
+  
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
@@ -99,3 +133,10 @@ enum Status {
   VALIDATED
   REJECTED
 }
+
+enum UserLevel {
+  STAR
+  PRO
+  ELITE
+}
+
