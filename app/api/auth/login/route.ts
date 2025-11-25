@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getUser } from '@/lib/db';
+import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
@@ -7,7 +7,9 @@ export async function POST(request: Request) {
         const body = await request.json();
         const { email, password } = body;
 
-        const user = await getUser(email);
+        const user = await prisma.user.findUnique({
+            where: { email }
+        });
 
         if (!user || user.password !== password) {
             return NextResponse.json(
@@ -16,12 +18,12 @@ export async function POST(request: Request) {
             );
         }
 
-        // In a real app, use a secure signed token (JWT/Jose)
-        // For this prototype, we'll store the user ID in a cookie
+        // Store user ID in cookie
         const cookieStore = await cookies();
         cookieStore.set('userId', user.id, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
             path: '/',
             maxAge: 60 * 60 * 24 * 7, // 1 week
         });
@@ -30,6 +32,7 @@ export async function POST(request: Request) {
         const { password: _, ...userWithoutPassword } = user;
         return NextResponse.json(userWithoutPassword);
     } catch (error) {
+        console.error('Login error:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
