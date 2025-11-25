@@ -130,25 +130,27 @@ export async function POST(request: Request) {
         console.error('Error saving metric:', error);
         return NextResponse.json({ error: 'Failed to save metric' }, { status: 500 });
     }
-    export async function GET(request: Request) {
-        const cookieStore = await cookies();
-        const userIdCookie = cookieStore.get('userId');
+}
 
-        if (!userIdCookie) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+export async function GET(request: Request) {
+    const cookieStore = await cookies();
+    const userIdCookie = cookieStore.get('userId');
 
-        const userId = userIdCookie.value;
-
-        try {
-            const userMetrics = await prisma.metricEntry.findMany({
-                where: { userId },
-                orderBy: { createdAt: 'desc' }
-            });
-
-            return NextResponse.json({ metrics: userMetrics });
-        } catch (error) {
-            console.error('Error fetching metrics:', error);
-            return NextResponse.json({ error: 'Failed to fetch metrics' }, { status: 500 });
-        }
+    if (!userIdCookie) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const userId = userIdCookie.value;
+
+    try {
+        const userMetrics = await prisma.metricEntry.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        return NextResponse.json({ metrics: userMetrics });
+    } catch (error) {
+        console.error('Error fetching metrics:', error);
+        return NextResponse.json({ error: 'Failed to fetch metrics' }, { status: 500 });
+    }
+}

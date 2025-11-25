@@ -70,10 +70,10 @@
   ],
   "messages": [],
   "config": {
-    "weeklyGoal": 50000,
-    "monthlyGoal": 200000,
+    "weeklyGoal": 10000,
+    "monthlyGoal": 10000,
     "leadExecutedValue": 10,
-    "leadQualifiedValue": 20,
+    "leadQualifiedValue": 10,
     "closerBonusValue": 500,
     "closerBonusThreshold": 17000
   },
