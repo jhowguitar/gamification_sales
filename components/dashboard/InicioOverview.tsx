@@ -25,8 +25,8 @@ const monthlyData = [
 
 export function InicioOverview({ data, user }: InicioOverviewProps) {
     // Calculate team totals
-    const teamWeeklyTotal = data.rankings.sdr.reduce((acc: number, u: any) => acc + (u.commission || 0), 0) +
-        data.rankings.closer.reduce((acc: number, u: any) => acc + (u.totalSales || 0), 0);
+    const teamWeeklyTotal = data.rankings.sdr.reduce((acc: number, u: any) => acc + (u.score || 0), 0) +
+        data.rankings.closer.reduce((acc: number, u: any) => acc + (u.score || 0), 0);
 
     const teamMonthlyTotal = teamWeeklyTotal * 4; // Simplified calculation
 
